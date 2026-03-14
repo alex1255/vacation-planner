@@ -1,0 +1,19 @@
+services:
+  vacation:
+    image: vacation-planner:latest
+    container_name: vacation
+    build: .
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8084:8000"
+    volumes:
+      - vacation-data:/data
+    networks:
+      - proxy
+
+volumes:
+  vacation-data:
+
+networks:
+  proxy:
+    external: true
