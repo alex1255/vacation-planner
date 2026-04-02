@@ -4,3 +4,5 @@ __pycache__/
 .env
 *.backup
 *.gz
+.DS_Store
+
