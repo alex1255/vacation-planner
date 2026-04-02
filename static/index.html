@@ -99,6 +99,10 @@
   .ov-cell:last-child { border-right: none; }
   .ov-bar { position: absolute; top: 4px; bottom: 4px; border-radius: 3px; min-width: 2px; opacity: 0.85; cursor: pointer; transition: opacity 0.1s; }
   .ov-bar:hover { opacity: 1; }
+  .ov-overlay { position: absolute; top: 0; bottom: 0; pointer-events: none; }
+  .ov-weekend { background: rgba(250,204,21,0.13); }
+  .ov-holiday { background: rgba(250,204,21,0.28); }
+  .ov-today { background: rgba(239,68,68,0.85); width: 1.5px !important; }
   .section-divider { padding: 12px 20px 0; display: flex; align-items: center; gap: 10px; }
   .section-divider span { font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
   .section-divider hr { flex: 1; border: none; border-top: 1px solid #e2e8f0; }
@@ -298,7 +302,35 @@ function renderOverview() {
   if (!employees.length) { el.innerHTML = ''; return; }
 
   var MSHORT = ['Jan','Feb','Mar','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+  var now = new Date();
+  var holidays = getHolidays(currentYear);
   var h = '';
+
+  // Precompute overlays per month: weekends, holidays, today
+  function getOverlays(m) {
+    var dim = new Date(currentYear, m+1, 0).getDate();
+    var overlays = '';
+    for (var d = 1; d <= dim; d++) {
+      var ds = dateStr(currentYear, m, d);
+      var dow = new Date(currentYear, m, d).getDay();
+      var left = ((d-1) / dim * 100).toFixed(3);
+      var width = (1 / dim * 100).toFixed(3);
+      var isWE = dow === 0 || dow === 6;
+      var isHol = !!holidays[ds];
+      var isToday = (currentYear === now.getFullYear() && m === now.getMonth() && d === now.getDate());
+
+      if (isHol) {
+        overlays += '<div class="ov-overlay ov-holiday" style="left:'+left+'%;width:'+width+'%"></div>';
+      } else if (isWE) {
+        overlays += '<div class="ov-overlay ov-weekend" style="left:'+left+'%;width:'+width+'%"></div>';
+      }
+      if (isToday) {
+        var todayLeft = ((d-1 + 0.5) / dim * 100).toFixed(3);
+        overlays += '<div class="ov-overlay ov-today" style="left:'+todayLeft+'%"></div>';
+      }
+    }
+    return overlays;
+  }
 
   // Header
   h += '<div class="overview-header">';
@@ -320,14 +352,16 @@ function renderOverview() {
       var dim = new Date(currentYear, m+1, 0).getDate();
       h += '<div class="ov-cell">';
 
-      // Find all vacations for this employee that overlap this month
+      // Overlays: weekends, holidays, today
+      h += getOverlays(m);
+
+      // Vacation bars
       vacations.forEach(function(v) {
         if (v.employee_id !== emp.id) return;
         var ms = dateStr(currentYear, m, 1);
         var me = dateStr(currentYear, m, dim);
         if (v.end_date < ms || v.start_date > me) return;
 
-        // Clamp to month boundaries
         var s = v.start_date < ms ? ms : v.start_date;
         var e = v.end_date > me ? me : v.end_date;
         var sd = parseInt(s.slice(8)) - 1;
