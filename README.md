@@ -6,14 +6,14 @@ A lightweight, self-hosted vacation and absence planner for small teams. No clou
 
 ## Features
 
-- 📊 **Year overview** — compact Gantt-style bars for all employees at a glance
-- 📅 **Detail calendar** — day-by-day view split into two half-year columns
-- 👥 **Employee management** — add/remove team members
-- 🏷️ **Custom categories** — e.g. Vacation, Sick, Home Office (fully configurable with colors)
-- 🇩🇪 **German public holidays** — Berlin holidays pre-configured (incl. Easter-based holidays)
-- 💾 **Persistent storage** — SQLite database via Docker volume
-- 🔌 **Works without backend too** — falls back to localStorage automatically (e.g. for previews)
-- 🌐 **Reverse proxy ready** — works great behind Nginx Proxy Manager
+-  **Year overview** — compact Gantt-style bars for all employees at a glance
+-  **Detail calendar** — day-by-day view split into two half-year columns
+-  **Employee management** — add/remove team members
+-  **Custom categories** — e.g. Vacation, Sick, Home Office (fully configurable with colors)
+-  **German public holidays** — Berlin holidays pre-configured (incl. Easter-based holidays)
+-  **Persistent storage** — SQLite database via Docker volume
+-  **Works without backend too** — falls back to localStorage automatically (e.g. for previews)
+-  **Reverse proxy ready** — works great behind Nginx Proxy Manager
 
 ## Quick Start
 
